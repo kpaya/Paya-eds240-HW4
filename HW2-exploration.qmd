@@ -1,0 +1,286 @@
+---
+title: "EDS 240: Assignment #2 Part 2"
+author: "Karol Paya"
+date: 2025-01-31
+format:
+  html:
+    embed-resources: true # this ensures that your rendered .html file is self-contained, so we (your instructors) can open it and view all your work
+editor_options: 
+  chunk_output_type: console
+---
+
+# Background
+
+**monthly_water_shortage_outlook**
+
+The primary function of the AWSDA is to motivate planning processes for water shortages. These data represent forecasts specific to the urban supplier and a snapshot in time based on the conditions when the supplier completed the plan. These data are expected to change as conditions change and water shortage plans are updated.
+
+Data Accessed: Feb. 1, 2025
+
+Source: Department of Water Resources (DWR) Water Use Efficiency portal 
+
+Import libraries
+
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Load libraries
+library(here)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(ggridges)
+library(tidycensus)
+library(tidyverse)
+```
+</details>
+Import data
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Read data
+demands_2022 <- read.delim(here('data/wsda_table2_2022_demands.xls'), sep = "\t")
+supply_2022 <- read.delim(here('data/wsda_table3_2022_supply.xls'), sep = "\t")
+demands_2023 <- read.delim(here('data/wsda_table2_2023_demands.xls'), sep = "\t")
+supply_2023 <- read.delim(here('data/wsda_table3_2023_supply.xls'), sep = "\t")
+demands_2024 <- read.delim(here('data/wsda_table2_2024_demands.xls'), sep = "\t")
+supply_2024 <- read.delim(here('data/wsda_table3_2024_supply.xls'), sep = "\t")
+```
+</details>
+ 
+Wrangle data
+<details>
+
+<summary>Click to view code</summary>
+```{r}
+# Function 1: Converts to Pivot Longer
+summarize_table <- function(df, county) {
+  # Extract the type (either "demand" or "supply") from the dataframe name
+  type <- str_extract(deparse(substitute(df)), "(demands|supply)")
+  # Create the corresponding column name
+  total_column_name <- paste0("total_", type)
+  
+  df_subset_long <- df %>%
+    filter(WATER_SUPPLIER_NAME == county, POTABLE_NONPOTABLE == 'potable') %>%
+    pivot_longer(
+      cols = ends_with("DEMANDS"),  # Select columns that end with "DEMANDS"
+      names_to = "Month",                  # Create a new column for the month 
+      values_to = type,                    # Create a new column for the demand/supply values
+      names_transform = list(Month = toupper)  # Keep month names in uppercase
+    )
+  # Summarize the data by month
+  df_subset_long_month <- df_subset_long %>%
+    group_by(Month) %>%           # Group by the Month column
+    summarize(!!total_column_name := sum(!!sym(type), na.rm = TRUE))  # Sum the values for each month
+
+  return(df_subset_long_month)
+}
+```
+
+
+```{r}
+# Function 2: process and merge data for all years (2022 to 2024)
+process_year_data <- function(start_year, end_year , county) {
+  # Initialize an empty list to store the data frames for each year
+  final_data <- list()
+
+  # Loop through the years
+  for (year in start_year:end_year) {
+    # Dynamically load the demand and supply data for each year
+    demands_file <- here(paste0('data/wsda_table2_', year, '_demands.xls'))
+    supply_file <- here(paste0('data/wsda_table3_', year, '_supply.xls'))
+
+    demands_df <- read.delim(demands_file, sep = "\t")
+    supply_df <- read.delim(supply_file, sep = "\t")
+
+    # Summarize the demands and supply for the current year
+    demands_summary <- summarize_table(demands_df, county) %>%
+      mutate(Year = year)
+    supply_summary <- summarize_table(supply_df, county) %>%
+      mutate(Year = year)
+
+    # Merge demands and supply summaries
+    merged_summary <- left_join(demands_summary, supply_summary, by = 'Month')
+    
+    # Remove the redundant Year column (Year.x or Year.y)
+    merged_summary <- merged_summary %>%
+      select(Month, total_demands, total_supply, Year = Year.x) 
+    
+    # Drop the '_DEMAND' part of the Month name and add the corresponding month number
+    merged_summary <- merged_summary %>%
+      mutate(
+        Month = str_remove(Month, "_DEMANDS"),  # Remove '_DEMAND' suffix
+        Month = str_to_title(Month), 
+        Month_number = match(Month, month.name), # Map month names to month numbers
+        Date = as.Date(paste(Year, Month_number, "01", sep = "-"), format = "%Y-%m-%d") #Create a Date object
+      )
+    # Append the merged data to the final list
+    final_data[[as.character(year)]] <- merged_summary
+  }
+
+  # Combine all year-wise data into one final data frame
+  final_table <- bind_rows(final_data)
+
+  return(final_table)
+}
+```
+</details>
+
+Run function
+```{r}
+# Assign variables
+start_year=2022
+end_year= 2024
+county='Alameda County Water District'
+
+# Call the function
+final_results <- process_year_data(start_year, end_year, county)
+```
+
+
+# Plot 1
+<details>
+
+<summary>Click to view code</summary>
+```{r}
+plot1 <- ggplot(final_results, aes(x = Date)) +
+  geom_line(aes(y = total_demands, color = "Demand"), size = 1) +  # Line for total_demand
+  geom_line(aes(y = total_supply, color = "Supply"), size = 1) +  # Line for total_supply
+  geom_point(aes(y = total_demands, color = "Demand"), size = 2) +  # Add points for demand
+  geom_point(aes(y = total_supply, color = "Supply"), size = 2) +  # Add points for supply
+  labs(
+    title = "Alameda County: Comparison of Water Supply and Demand",
+    x = "Date",
+    y = "Water Volume (Acre-Foot)",
+    color = "Type"  # Label for the color legend
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "4 months") +  # Format x-axis as Month Year
+  scale_color_manual(values = c("Demand" = "cyan3", "Supply" = "firebrick")) +  # Custom colors for Demand and Supply
+
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.title = element_text(size = 8),
+    axis.text.x = element_text(angle = 45, size = 8, hjust = 1),
+    axis.title.x = element_text(size = 10, face = "bold"),  
+    axis.title.y = element_text(size = 10, face = "bold"),
+    legend.position = "bottom" , # Position the legend at the bottom
+    borderaxis.line = element_line(color = "black", size = 1),  # Add axis lines
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(color = "black", size = 1)  # Background with
+    
+  )
+```
+</details>
+
+```{r fig.alt = "This time series plot compares the historical water demand and supply in Alameda County from 2022 to 2024. The plot reveals that water demand consistently exceeds supply throughout the years. A clear seasonal pattern is observed, with higher demand peaks in the summer months and a noticeable decrease in water consumption during the winter. This highlights the seasonal variability in water usage, as well as the ongoing imbalance between supply and demand.", warning=FALSE, message=FALSE}
+# Display plot
+plot1
+```
+
+# Plot 2
+<details>
+
+<summary>Click to view code</summary>
+
+```{r}
+# Import dataset
+supply_2024 <- read.delim(here('data/wsda_table3_2024_supply.xls'), sep = "\t")
+
+# Select county, group by source of supply and sum all demands
+df2 <- supply_2024 %>%
+  filter(WATER_SUPPLIER_NAME == 'Alameda County Water District', POTABLE_NONPOTABLE == 'potable') %>%
+  # Select only columns that end with '_DEMANDS' and are numeric
+  mutate(total_supply = rowSums(select(., ends_with("_DEMANDS")), na.rm = TRUE)) %>%
+  group_by(SUPPLIES) %>%
+  summarise(total_supply = sum(total_supply, na.rm = TRUE))  # Sum all demands
+
+# Create the bar plot
+plot2 <- ggplot(df2, aes(x = reorder(SUPPLIES, total_supply), y = total_supply, fill = SUPPLIES)) +
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  labs(
+    title = "Sources of Water Supply in Alameda County (2024)",
+    x = "Source of Supply",
+    y = "Total Supply (Acre-Foot)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels for readability
+    plot.title = element_text(hjust = 0.5)  # Center the title
+  )
+```
+</details>
+
+```{r}
+# Print the plot
+print(plot2)
+```
+
+# Plot 3
+<details>
+
+<summary>Click to view code</summary>
+```{r}
+Alameda<-final_results %>% 
+  mutate(diff=total_supply - total_demands)%>%
+  filter(Year==2024)
+
+Bakersfield<- process_year_data(start_year, end_year, "Bakersfield  City Of")%>% 
+  mutate(diff=total_supply - total_demands)%>%
+  filter(Year==2024)
+
+Goleta<-process_year_data(start_year, end_year, "Goleta Water District")%>% 
+  mutate(diff=total_supply - total_demands)%>%
+  filter(Year==2024)
+
+# Combine the three data frames into one
+combined_data2 <- bind_rows(
+  Alameda %>% mutate(County = "Alameda"),
+  Bakersfield %>% mutate(County = "Bakersfield"),
+  Goleta %>% mutate(County = "Goleta")
+)
+
+
+# Create the horizontal bar plot with facet_wrap
+plot3<-ggplot(combined_data2, aes(x = diff, y = Month, fill = County)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +  # Horizontal bar plot
+  facet_wrap(~ County, scales = "free_y") +  # Facet by County with free y scales
+  labs(
+    title = "Monthly Demand vs. Supply Difference in California Counties (2024)",
+    x = "Difference (Supply - Demand) (Acre-Feet)",
+    y = "Month"
+  ) +
+  scale_fill_manual(values = c("Alameda" = "deepskyblue4", "Camrosa" = "gold1", "Goleta" = "darkseagreen1")) +  # Custom fill colors
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),  # Center the title
+    axis.title.x = element_text(size = 12),  # Label size adjustments
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    strip.text = element_text(size = 14),  # Bigger facet labels
+    panel.spacing = unit(1, "lines")  # Space between panels
+  )
+```
+</details>
+
+```{r}
+# Display plot 
+plot3
+```
+
+# 2c. Answer questions
+
+
+**1. What have you learned about your data? Have any potentially interesting patterns emerged?**
+
+The dataset requires a lot of data wrangling, found several inconsistencies and missing values. These issues make it challenging to draw any conclusions. Need to inquire about the negative values in the supply - demand difference, could these negative values indicate a drought situation? 
+
+**2. In HW #1, you outlined some questions that you wanted to answer using these data. Have you made any strides towards answering those questions? If yes, how so? If no, what next steps do you need to take (e.g. I need to create X plot type, I still need to track down Y data, I need to restructure existing data so that you can visualize it in Z ways, etc.)?**
+
+I wanted to explore California's water crisis, focusing on vulnerability and risk across counties. After conducting this analysis, I feel I’ve made some strides in this direction. By analyzing supply and demand data at the county level, I’ve identified some discrepancies between supply and demand across different regions, which may indicate vulnerability. I’ve started to look for months where demand > supply, potentially highlighting areas at greater risk of water scarcity.
+
+**3. What challenges do you foresee encountering with your data? These can be data wrangling and / or visualization challenges.**
+
+Data wrangling, the data is not in a format that is easily compatible with data science tools, so a significant amount of cleaning and manipulation is required to prepare it for analysis and visualization.
