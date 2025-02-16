@@ -1,0 +1,312 @@
+---
+title: "EDS 240: Assignment #3 "
+author: "Karol Paya"
+date: 2025-02-15
+format:
+  html:
+    embed-resources: true # this ensures that your rendered .html file is self-contained, so we (your instructors) can open it and view all your work
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+**1.Which option do you plan to pursue? It’s okay if this has changed since HW #1.**
+
+Infographics
+
+**2. Restate your question(s). Has this changed at all since HW #1? If yes, how so?**
+
+How Did the 2022 Drought Impact Water the City of Coalinga?
+
+- Shortage Levels Across California: Mapping Drought Severity
+
+- Coalinga Water Distribution by Sector: Who Uses the Most?
+
+- Sources of Water Supply: How much water was purchased? 
+
+- Water Price Trends: The Cost of Drought
+
+Yes, the focus of my analysis has slightly changed. In the previous homework, I was getting familiar with the datasets, I wanted to explore a broader perspective on drought impacts across California.I am now narrowing my focus to the City of Coalinga, which experienced severe drought conditions in 2022. This shift will allow for a more detailed and localized analysis, making it a stronger story for the infographic.
+
+**3. Explain which variables from your data set(s) you will use to answer your question(s), and how.**
+
+## California Department of Water Resources - Urban Water Data (Drought Planning and Management)
+
+Source: https://data.cnra.ca.gov/dataset/urban-water-data-drought
+
+Variable 1: Shortage Level
+This variable indicates the severity of drought in each water district in California, ranging from level 0 (no drought risk) to level 6 (high risk of drought). This data will allow us to assess the drought severity experienced by Coalinga in comparison to other areas across the state.
+
+Variable 2: Historical Water Delivered
+This dataset provides information on the distribution of water supplied to various sectors (e.g., agriculture, residential, industry, etc.). By analyzing this data, we can identify which sectors were most affected by the drought, helping to understand the impact of water shortages on different areas of the economy.
+
+Variable 3: Historical Water Produced
+This column shows the sources of water and their corresponding production levels (e.g., groundwater: 1,000 acre-feet, surface water: 500 acre-feet). It also includes data on how much water was purchased to meet demand. This variable will provide insight into how much of the water supply was sourced locally versus purchased during drought periods.
+
+
+## Nasdaq Veles California Water Index (NQH2O) Historical Data
+
+Source: https://www.nasdaq.com/market-activity/index/nqh2o/historical?page=1&rows_per_page=10&timeline=y10
+
+Variable 4: Water Price
+This dataset tracks the price of water over time. By analyzing price fluctuations, particularly during drought events, we can estimate the financial impact of the drought on water purchases. We will be able to visualize how water prices rise during periods of scarcity and calculate the cost of meeting water demand under such conditions.
+
+**4. In HW #2, you created some exploratory data viz to better understand your data. You may already have some ideas of how you plan to formally visualize your data, but it’s incredibly helpful to look at visualizations by other creators for inspiration. Find at least two data visualizations that you could (potentially) borrow / adapt pieces from. Link to them or download and embed them into your .qmd file, and explain which elements you might borrow (e.g. the graphic form, legend design, layout, etc.).**
+
+I was inspired by a map combined with a bar graph that effectively compares shortage levels across different cities in California. I plan to borrow the graphic form, where a map shows regional drought severity, and the bar graph highlights comparisons of shortage levels.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: "center"
+#| out-width: "100%"
+#| fig-alt: "Alt text here"
+knitr::include_graphics("data/map.png")
+
+#Link: https://climatecheck.com/california
+```
+
+Initially, I had intended to use a blue-and-white color scheme to represent water. However, after seeing visualizations that utilize an orange-and-brown palette, I believe this color scheme better represents the urgency and severity of a drought crisis, which aligns with the overall tone of the infographic.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: "center"
+#| out-width: "100%"
+#| fig-alt: "Alt text here"
+knitr::include_graphics("data/color-theme.png")
+
+#Link: https://www.seametrics.com/blog/water-infographics/
+```
+
+I really like the idea of using the size of water drops to represent percentages. This method is visually engaging and effectively conveys the data in a way that makes it easy to understand at a glance.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: "center"
+#| out-width: "100%"
+#| fig-alt: "Alt text here"
+knitr::include_graphics("data/waterdrop.png")
+
+#Link: https://www.visualcapitalist.com/not-a-drop-to-drink-americas-water-crisis/
+```
+
+**5. Hand-draw your anticipated visualizations, then take a photo of your drawing(s) and embed it in your rendered .qmd file – note that these are not exploratory visualizations, but rather your plan for your final visualizations that you will eventually polish and submit with HW #4. You should have:
+a sketch of your infographic (which should include at least three component visualizations) if you are pursuing option 1**
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: "center"
+#| out-width: "100%"
+#| fig-alt: "Alt text here"
+knitr::include_graphics("data/draft.jpeg")
+
+```
+
+Import libraries
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Load libraries
+library(here)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(ggridges)
+library(tidycensus)
+library(tidyverse)
+library(lubridate)
+library(gt)
+```
+</details>
+
+Load Data
+
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Read data
+waterprice <- read_csv(here('data/HistoricalData_waterprice.csv'))
+
+# Drop rows NaN values
+waterprice <- drop_na(waterprice, price)
+waterprice <- drop_na(waterprice, Date)
+
+# Convert  Date column to Date type
+waterprice$Date <- as.Date(waterprice$Date, format = "%m/%d/%Y")
+
+historical <- read_csv(here('data/historical_production_delivery.csv'))
+```
+</details>
+
+# Shortage Level Bar Graph
+
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Create shortage level dataframe
+city_data <- data.frame(
+  City = c("Sacramento", "San Francisco", "City of Coalinga", "Bakersfield", "Los Angeles", "San Diego"),
+  Shortage_Level = c(2, 2, 5, 2, 3, 2)
+)
+
+# Make city column a factor 
+city_data$City <- factor(city_data$City, levels = city_data$City)
+
+# Custom colors
+custom_colors <- c("#ffc800","#ffc800", "firebrick", "#ffc800","#d0630e", "#ffc800")
+
+# Create a horizontal bar plot 
+bar_graph<-ggplot(city_data, aes(x = Shortage_Level, y = City, fill = City)) +
+  geom_bar(stat = "identity") +  # Create bars
+  geom_text(aes(label = Shortage_Level),  # Add text labels
+            hjust = -0.1,  # Position the labels to the right of the bars
+            size = 3.5) +  # Adjust the size of the labels
+  scale_fill_manual(values = custom_colors) +  # Apply custom colors
+  theme_minimal() +
+  labs(x = "Shortage Level") +
+  theme(
+    axis.text.x = element_blank(),  # Remove x-axis labels
+    axis.ticks.x = element_blank(),  # Remove x-axis ticks
+    legend.position = "none",  # Remove legend
+    panel.grid = element_blank()  # Remove gridlines
+  )
+
+# Note: I will place this plot beside the California map, the y-label will be cropped
+```
+</details>
+
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+bar_graph
+```
+Note: I will place this plot beside the California map, the y-label will be cropped
+
+# Historical Water Produced/Delivered Percentages
+
+Data Wrangle
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# add new column `year`
+historical$year <- year(ymd(historical$start_date))
+
+district_historical<-'coalinga-city'
+
+# Water Source
+historical_watersource <- historical %>%
+    filter(water_system_name == district_historical, water_produced_or_delivered == 'water produced', year==2022)%>%
+  group_by(water_type) %>%
+  summarise(total_quantity = sum(quantity_acre_feet, na.rm = TRUE)) %>%
+  mutate(total_yearly_quantity = sum(total_quantity, na.rm = TRUE),  # Calculate total quantity
+         percent = (total_quantity / total_yearly_quantity) * 100) # Calculate %
+
+# Where the water was supplied
+historical_watersent <- historical %>%
+    filter(water_system_name == district_historical, water_produced_or_delivered == 'water delivered', year==2022 )%>%
+  group_by(water_type) %>%
+  summarise(total_quantity = sum(quantity_acre_feet, na.rm = TRUE)) %>%
+  mutate(total_yearly_quantity = sum(total_quantity, na.rm = TRUE),  # Calculate total quantity
+         percent = (total_quantity / total_yearly_quantity) * 100) # Calculate %
+```
+
+Note: The percentages will be represented as a water drop (not in a table)
+
+Tables
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Table 1: Water Source (water produced)
+historical_watersource_table <- historical_watersource %>%
+  gt() %>%
+  tab_header(
+    title = "Water Source - Water Produced"
+  ) %>%
+  cols_label(
+    water_type = "Water Type",
+    total_quantity = "Total Quantity (Acre-feet)",
+    percent = "Percentage of Total"
+  )  %>%
+  fmt_number(
+    columns = c("total_quantity", "percent"),
+    decimals = 2
+  )
+
+# Table 2: Water Sent (water delivered)
+historical_watersent_table <- historical_watersent %>%
+  gt() %>%
+  tab_header(
+    title = "Water Sent - Water Delivered"
+  ) %>%
+  cols_label(
+    water_type = "Water Type",
+    total_quantity = "Total Quantity (Acre-feet)",
+    percent = "Percentage of Total"
+  ) %>%
+  fmt_number(
+    columns = c("total_quantity", "percent"),
+    decimals = 2
+  )
+```
+</details>
+
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Display table1
+historical_watersource_table
+```
+
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Display table2
+historical_watersent_table
+```
+
+# Historical Water Price Plot
+<details>
+
+<summary>Click to view code</summary>
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+# Create the time series plot with a vertical line for 2022 and a drought annotation
+
+timeseries<-ggplot(waterprice, aes(x = Date, y = price)) +
+  geom_line(color = "firebrick") +  
+  geom_area(fill = "orange", alpha = 0.7) +  # Fill the area under the line with orange color
+  labs(
+    title = "Nasdaq Veles California Water Index (NQH2O)",
+    x = "Date",
+    y = "Price ($)",
+    caption = "Source: Nasdaq") +
+  theme_minimal() +
+  geom_vline(xintercept = as.Date("2022-09-15"), linetype = "dashed", color = "red", size = 0.7) +  # Add vertical line at 2022
+  annotate("text", x = as.Date("2022-01-01"), y = max(waterprice$price), label = "Drought Event", vjust = -0.5, hjust = -0.9, color = "red", size = 4)+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  # Center and bold the title
+    plot.background = element_rect(fill = "white", color = "black", size = 1)
+  )
+```
+</details>
+
+```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+timeseries
+```
+
+**7. Answer the following questions:**
+
+**a. What challenges did you encounter or anticipate encountering as you continue to build / iterate on your visualizations in R? If you struggled with mocking up any of your three visualizations (from #6, above), describe those challenges here.**
+
+The most challenging part for me has been crafting an interesting story with the available data. I find it difficult to make the visualizations engaging and meaningful with the limited information I have. I feel my graphs are somewhat basic. I’ll continue working on refining these plots to improve them.
+
+**b. What ggplot extension tools / packages do you need to use to build your visualizations? Are there any that we haven’t covered in class that you’ll be learning how to use for your visualizations?**
+
+I haven’t used any new packages that weren't already covered in class. 
+
+**c. What feedback do you need from the instructional team and / or your peers to ensure that your intended message is clear?**
+
+Perhaps more tips on how to enhance the visuals and impact of my graphs, whether there are additional information or design elements that could make my infographic more engaging and informative.
+
