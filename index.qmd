@@ -57,6 +57,7 @@ Nasdaq. (2025). Nasdaq Veles California Water Index (NQH2O) \[Data set\]. Retrie
 ## Coalinga Water Crisis - Infographic
 
 ```{r}
+#| echo: false
 # Upload picture
 knitr::include_graphics("data/infographics2.jpg")
 ```
@@ -208,6 +209,7 @@ bar_graph <- ggplot(city_data, aes(x = state_standard_shortage_level, y = suppli
 </details>
 
 ```{r fig.alt = "This bar graph illustrates the water shortage levels (ranging from 0 to 6) across various regions in California, including Sacramento District, San Francisco, City of Coalinga, Bakersfield, Los Angeles City, and City of San Diego. Level 0 indicates low risk, while level 6 represents high risk. The City of Coalinga is shown at a risk level of 5, indicating a drought event, while other cities range from levels 1 to 3", fig.asp=0.6, warning=FALSE, message=FALSE}
+#| echo: false
 bar_graph
 ```
 
@@ -254,7 +256,7 @@ barplot <- ggplot(bar_data, aes(x = water_type, y = percent)) +
 </details>
 
 ```{r fig.alt = "The bar plot depicts the percentage distribution of water sources in Coalinga City for 2022. Surface water constitutes 65% of the total water supply, while 35% was purchased", fig.asp=0.7, warning=FALSE, message=FALSE}
-
+#| echo: false
 barplot
 ```
 
@@ -265,6 +267,7 @@ Tables
 <summary>Click to view code</summary>
 
 ```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+#| echo: false
 # Table 1: Water Source (water produced)
 historical_watersource_table <- historical_watersource %>%
   gt() %>%
@@ -286,6 +289,7 @@ historical_watersource_table <- historical_watersource %>%
 </details>
 
 ```{r eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+#| echo: false
 # Display table
 historical_watersource_table
 ```
@@ -329,5 +333,6 @@ timeseries <- ggplot(waterprice, aes(x = Date, y = price)) +
 </details>
 
 ```{r fig.alt = "This time series shows the historic Nasdaq Veles California Water prices from 2020-2025. It highlights the drought periods in 2022 showing that the prices spiked from ~$750/ acres-feet in Dec.2021 to $1250/acres-feet in June 2022 ", fig.asp=0.7, warning=FALSE, message=FALSE}
+#| echo: false
 timeseries
 ```

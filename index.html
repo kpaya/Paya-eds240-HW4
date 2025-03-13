@@ -163,8 +163,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="coalinga-water-crisis---infographic" class="level2">
 <h2 class="anchored" data-anchor-id="coalinga-water-crisis---infographic">Coalinga Water Crisis - Infographic</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Upload picture</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"data/infographics2.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -200,16 +198,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Click to view code
 </summary>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidycensus)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidycensus)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
 <p>Load Data</p>
@@ -218,18 +216,18 @@ Click to view code
 Click to view code
 </summary>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/HistoricalData_waterprice.csv'</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop rows NaN values</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(waterprice, price)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(waterprice, Date)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert  Date column to Date type</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>waterprice<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(waterprice<span class="sc">$</span>Date, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>historical <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/historical_production_delivery.csv'</span>))</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>shortage <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/actual_water_shortage_level.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/HistoricalData_waterprice.csv'</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop rows NaN values</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(waterprice, price)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>waterprice <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(waterprice, Date)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert  Date column to Date type</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>waterprice<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(waterprice<span class="sc">$</span>Date, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>historical <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/historical_production_delivery.csv'</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>shortage <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data/actual_water_shortage_level.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
 <p>Shortage Level Bar Graph</p>
@@ -238,66 +236,65 @@ Click to view code
 Click to view code
 </summary>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create shortage level dataframe</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> shortage <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(end_date), <span class="at">month =</span> <span class="fu">month</span>(end_date)) <span class="sc">%&gt;%</span> <span class="co"># Create a column for year</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(supplier_name, state_standard_shortage_level, year, month) <span class="sc">%&gt;%</span> <span class="co"># Select key columns</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">==</span> <span class="dv">2022</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    month <span class="sc">==</span> <span class="dv">12</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">%in%</span> <span class="fu">c</span>(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california american water company - sacramento district'</span>, </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california water service company south san francisco'</span>, </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'city of coalinga'</span>, </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california water service company bakersfield'</span>, </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'los angeles city department of water and power'</span>, </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'city of san diego'</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="co"># Specify which water districts will be studied</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Make city column a factor </span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>city_data<span class="sc">$</span>supplier_name <span class="ot">&lt;-</span> <span class="fu">factor</span>(city_data<span class="sc">$</span>supplier_name , <span class="at">levels =</span> city_data<span class="sc">$</span>supplier_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create shortage level dataframe</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> shortage <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(end_date), <span class="at">month =</span> <span class="fu">month</span>(end_date)) <span class="sc">%&gt;%</span> <span class="co"># Create a column for year</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(supplier_name, state_standard_shortage_level, year, month) <span class="sc">%&gt;%</span> <span class="co"># Select key columns</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">==</span> <span class="dv">2022</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    month <span class="sc">==</span> <span class="dv">12</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california american water company - sacramento district'</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california water service company south san francisco'</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'city of coalinga'</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'california water service company bakersfield'</span>, </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'los angeles city department of water and power'</span>, </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'city of san diego'</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="co"># Specify which water districts will be studied</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Make city column a factor </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>city_data<span class="sc">$</span>supplier_name <span class="ot">&lt;-</span> <span class="fu">factor</span>(city_data<span class="sc">$</span>supplier_name , <span class="at">levels =</span> city_data<span class="sc">$</span>supplier_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new column to define the order</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> city_data <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">order_col =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california american water company - sacramento district'</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california water service company south san francisco'</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'city of coalinga'</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california water service company bakersfield'</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'los angeles city department of water and power'</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'city of san diego'</span> <span class="sc">~</span> <span class="dv">6</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reverse the order in the factor levels to make the plot start from 1 at the top</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> city_data <span class="sc">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">supplier_name =</span> <span class="fu">factor</span>(supplier_name, <span class="at">levels =</span> <span class="fu">rev</span>(city_data<span class="sc">$</span>supplier_name[<span class="fu">order</span>(city_data<span class="sc">$</span>order_col)])))</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot, using order_col to control the order of supplier_name</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>bar_graph <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(city_data, <span class="fu">aes</span>(<span class="at">x =</span> state_standard_shortage_level, <span class="at">y =</span> supplier_name, <span class="at">fill =</span> state_standard_shortage_level)) <span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span>  <span class="co"># Create bars</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> state_standard_shortage_level),  <span class="co"># Add text labels</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>,  <span class="co"># Position the labels to the right of the bars</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"yellow1"</span>, <span class="at">high =</span> <span class="st">"firebrick"</span>, </span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>), </span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Low Risk"</span>, <span class="st">"High Risk"</span>)) <span class="sc">+</span>  <span class="co"># Custom legend labels</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Shortage Level"</span>, <span class="at">y=</span><span class="st">"Water District"</span>, <span class="at">fill =</span> <span class="st">"Shortage Risk Level"</span>) <span class="sc">+</span>  <span class="co"># Add title for the legend</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove x-axis labels</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove x-axis ticks</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,  <span class="co"># Place the legend on the right</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray"</span>, <span class="at">size =</span> <span class="fl">0.5</span>),  <span class="co"># Add major gridlines</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()  <span class="co"># Keep the gridlines visible for both axes</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new column to define the order</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> city_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">order_col =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california american water company - sacramento district'</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california water service company south san francisco'</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'city of coalinga'</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'california water service company bakersfield'</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'los angeles city department of water and power'</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    supplier_name <span class="sc">==</span> <span class="st">'city of san diego'</span> <span class="sc">~</span> <span class="dv">6</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reverse the order in the factor levels to make the plot start from 1 at the top</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>city_data <span class="ot">&lt;-</span> city_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">supplier_name =</span> <span class="fu">factor</span>(supplier_name, <span class="at">levels =</span> <span class="fu">rev</span>(city_data<span class="sc">$</span>supplier_name[<span class="fu">order</span>(city_data<span class="sc">$</span>order_col)])))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot, using order_col to control the order of supplier_name</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>bar_graph <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(city_data, <span class="fu">aes</span>(<span class="at">x =</span> state_standard_shortage_level, <span class="at">y =</span> supplier_name, <span class="at">fill =</span> state_standard_shortage_level)) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span>  <span class="co"># Create bars</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> state_standard_shortage_level),  <span class="co"># Add text labels</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>,  <span class="co"># Position the labels to the right of the bars</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span>  </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"yellow1"</span>, <span class="at">high =</span> <span class="st">"firebrick"</span>, </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>), </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Low Risk"</span>, <span class="st">"High Risk"</span>)) <span class="sc">+</span>  <span class="co"># Custom legend labels</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Shortage Level"</span>, <span class="at">y=</span><span class="st">"Water District"</span>, <span class="at">fill =</span> <span class="st">"Shortage Risk Level"</span>) <span class="sc">+</span>  <span class="co"># Add title for the legend</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove x-axis labels</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove x-axis ticks</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,  <span class="co"># Place the legend on the right</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray"</span>, <span class="at">size =</span> <span class="fl">0.5</span>),  <span class="co"># Add major gridlines</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()  <span class="co"># Keep the gridlines visible for both axes</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bar_graph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -315,37 +312,36 @@ Click to view code
 Click to view code
 </summary>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add new column `year`</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>historical<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">year</span>(<span class="fu">ymd</span>(historical<span class="sc">$</span>start_date))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>district_historical<span class="ot">&lt;-</span><span class="st">'coalinga-city'</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Water Source</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>historical_watersource <span class="ot">&lt;-</span> historical <span class="sc">%&gt;%</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(water_system_name <span class="sc">==</span> district_historical, water_produced_or_delivered <span class="sc">==</span> <span class="st">'water produced'</span>, year<span class="sc">==</span><span class="dv">2022</span>)<span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(water_type) <span class="sc">%&gt;%</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_quantity =</span> <span class="fu">sum</span>(quantity_acre_feet, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_yearly_quantity =</span> <span class="fu">sum</span>(total_quantity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Calculate total quantity</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> (total_quantity <span class="sc">/</span> total_yearly_quantity) <span class="sc">*</span> <span class="dv">100</span>) <span class="co"># Calculate %</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Select the only existing water source, based on the table: Surface Water &amp; Purchased Water</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>bar_data <span class="ot">&lt;-</span> historical_watersource <span class="sc">%&gt;%</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(water_type <span class="sc">==</span> <span class="st">"surface water"</span> <span class="sc">|</span> water_type <span class="sc">==</span> <span class="st">"purchased or received from another pws"</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>barplot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bar_data, <span class="fu">aes</span>(<span class="at">x =</span> water_type, <span class="at">y =</span> percent)) <span class="sc">+</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="dv">1</span>), <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span>  <span class="co"># Bar plot with dodged bars</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"City of Coalinga: Water Type Percentages in 2022"</span>, <span class="at">x =</span> <span class="st">"Water Type"</span>, <span class="at">y =</span> <span class="st">"Percentage (%)"</span>) <span class="sc">+</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,  <span class="co"># Hide legend </span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove major gridlines</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>() ) <span class="sc">+</span>  <span class="co"># Remove minor gridlines</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add new column `year`</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>historical<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">year</span>(<span class="fu">ymd</span>(historical<span class="sc">$</span>start_date))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>district_historical<span class="ot">&lt;-</span><span class="st">'coalinga-city'</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Water Source</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>historical_watersource <span class="ot">&lt;-</span> historical <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(water_system_name <span class="sc">==</span> district_historical, water_produced_or_delivered <span class="sc">==</span> <span class="st">'water produced'</span>, year<span class="sc">==</span><span class="dv">2022</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(water_type) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_quantity =</span> <span class="fu">sum</span>(quantity_acre_feet, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_yearly_quantity =</span> <span class="fu">sum</span>(total_quantity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Calculate total quantity</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">percent =</span> (total_quantity <span class="sc">/</span> total_yearly_quantity) <span class="sc">*</span> <span class="dv">100</span>) <span class="co"># Calculate %</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Select the only existing water source, based on the table: Surface Water &amp; Purchased Water</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>bar_data <span class="ot">&lt;-</span> historical_watersource <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(water_type <span class="sc">==</span> <span class="st">"surface water"</span> <span class="sc">|</span> water_type <span class="sc">==</span> <span class="st">"purchased or received from another pws"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>barplot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bar_data, <span class="fu">aes</span>(<span class="at">x =</span> water_type, <span class="at">y =</span> percent)) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="dv">1</span>), <span class="at">width =</span> <span class="fl">0.9</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span>  <span class="co"># Bar plot with dodged bars</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"City of Coalinga: Water Type Percentages in 2022"</span>, <span class="at">x =</span> <span class="st">"Water Type"</span>, <span class="at">y =</span> <span class="st">"Percentage (%)"</span>) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,  <span class="co"># Hide legend </span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),  <span class="co"># Remove major gridlines</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>() ) <span class="sc">+</span>  <span class="co"># Remove minor gridlines</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>barplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -359,45 +355,26 @@ Click to view code
 <summary>
 Click to view code
 </summary>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Table 1: Water Source (water produced)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>historical_watersource_table <span class="ot">&lt;-</span> historical_watersource <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Water Source - Water Produced"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">water_type =</span> <span class="st">"Water Type"</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_quantity =</span> <span class="st">"Total Quantity (Acre-feet)"</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">percent =</span> <span class="st">"Percentage of Total"</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">%&gt;%</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"total_quantity"</span>, <span class="st">"percent"</span>),</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">decimals =</span> <span class="dv">2</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </details>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display table</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>historical_watersource_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="dnbuoumcwi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dnbuoumcwi table {
+<div id="rlfiddhiuj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rlfiddhiuj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#dnbuoumcwi thead, #dnbuoumcwi tbody, #dnbuoumcwi tfoot, #dnbuoumcwi tr, #dnbuoumcwi td, #dnbuoumcwi th {
+#rlfiddhiuj thead, #rlfiddhiuj tbody, #rlfiddhiuj tfoot, #rlfiddhiuj tr, #rlfiddhiuj td, #rlfiddhiuj th {
   border-style: none;
 }
 
-#dnbuoumcwi p {
+#rlfiddhiuj p {
   margin: 0;
   padding: 0;
 }
 
-#dnbuoumcwi .gt_table {
+#rlfiddhiuj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -423,12 +400,12 @@ Click to view code
   border-left-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_caption {
+#rlfiddhiuj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dnbuoumcwi .gt_title {
+#rlfiddhiuj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -440,7 +417,7 @@ Click to view code
   border-bottom-width: 0;
 }
 
-#dnbuoumcwi .gt_subtitle {
+#rlfiddhiuj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -452,7 +429,7 @@ Click to view code
   border-top-width: 0;
 }
 
-#dnbuoumcwi .gt_heading {
+#rlfiddhiuj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -464,13 +441,13 @@ Click to view code
   border-right-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_bottom_border {
+#rlfiddhiuj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_col_headings {
+#rlfiddhiuj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -485,7 +462,7 @@ Click to view code
   border-right-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_col_heading {
+#rlfiddhiuj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -505,7 +482,7 @@ Click to view code
   overflow-x: hidden;
 }
 
-#dnbuoumcwi .gt_column_spanner_outer {
+#rlfiddhiuj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -517,15 +494,15 @@ Click to view code
   padding-right: 4px;
 }
 
-#dnbuoumcwi .gt_column_spanner_outer:first-child {
+#rlfiddhiuj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dnbuoumcwi .gt_column_spanner_outer:last-child {
+#rlfiddhiuj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dnbuoumcwi .gt_column_spanner {
+#rlfiddhiuj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -537,11 +514,11 @@ Click to view code
   width: 100%;
 }
 
-#dnbuoumcwi .gt_spanner_row {
+#rlfiddhiuj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#dnbuoumcwi .gt_group_heading {
+#rlfiddhiuj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -567,7 +544,7 @@ Click to view code
   text-align: left;
 }
 
-#dnbuoumcwi .gt_empty_group_heading {
+#rlfiddhiuj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -582,15 +559,15 @@ Click to view code
   vertical-align: middle;
 }
 
-#dnbuoumcwi .gt_from_md > :first-child {
+#rlfiddhiuj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dnbuoumcwi .gt_from_md > :last-child {
+#rlfiddhiuj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dnbuoumcwi .gt_row {
+#rlfiddhiuj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -609,7 +586,7 @@ Click to view code
   overflow-x: hidden;
 }
 
-#dnbuoumcwi .gt_stub {
+#rlfiddhiuj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -622,7 +599,7 @@ Click to view code
   padding-right: 5px;
 }
 
-#dnbuoumcwi .gt_stub_row_group {
+#rlfiddhiuj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -636,15 +613,15 @@ Click to view code
   vertical-align: top;
 }
 
-#dnbuoumcwi .gt_row_group_first td {
+#rlfiddhiuj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dnbuoumcwi .gt_row_group_first th {
+#rlfiddhiuj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#dnbuoumcwi .gt_summary_row {
+#rlfiddhiuj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -654,16 +631,16 @@ Click to view code
   padding-right: 5px;
 }
 
-#dnbuoumcwi .gt_first_summary_row {
+#rlfiddhiuj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_first_summary_row.thick {
+#rlfiddhiuj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dnbuoumcwi .gt_last_summary_row {
+#rlfiddhiuj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -673,7 +650,7 @@ Click to view code
   border-bottom-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_grand_summary_row {
+#rlfiddhiuj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -683,7 +660,7 @@ Click to view code
   padding-right: 5px;
 }
 
-#dnbuoumcwi .gt_first_grand_summary_row {
+#rlfiddhiuj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -693,7 +670,7 @@ Click to view code
   border-top-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_last_grand_summary_row_top {
+#rlfiddhiuj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -703,11 +680,11 @@ Click to view code
   border-bottom-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_striped {
+#rlfiddhiuj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dnbuoumcwi .gt_table_body {
+#rlfiddhiuj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -716,7 +693,7 @@ Click to view code
   border-bottom-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_footnotes {
+#rlfiddhiuj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -730,7 +707,7 @@ Click to view code
   border-right-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_footnote {
+#rlfiddhiuj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -739,7 +716,7 @@ Click to view code
   padding-right: 5px;
 }
 
-#dnbuoumcwi .gt_sourcenotes {
+#rlfiddhiuj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -753,7 +730,7 @@ Click to view code
   border-right-color: #D3D3D3;
 }
 
-#dnbuoumcwi .gt_sourcenote {
+#rlfiddhiuj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -761,72 +738,72 @@ Click to view code
   padding-right: 5px;
 }
 
-#dnbuoumcwi .gt_left {
+#rlfiddhiuj .gt_left {
   text-align: left;
 }
 
-#dnbuoumcwi .gt_center {
+#rlfiddhiuj .gt_center {
   text-align: center;
 }
 
-#dnbuoumcwi .gt_right {
+#rlfiddhiuj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dnbuoumcwi .gt_font_normal {
+#rlfiddhiuj .gt_font_normal {
   font-weight: normal;
 }
 
-#dnbuoumcwi .gt_font_bold {
+#rlfiddhiuj .gt_font_bold {
   font-weight: bold;
 }
 
-#dnbuoumcwi .gt_font_italic {
+#rlfiddhiuj .gt_font_italic {
   font-style: italic;
 }
 
-#dnbuoumcwi .gt_super {
+#rlfiddhiuj .gt_super {
   font-size: 65%;
 }
 
-#dnbuoumcwi .gt_footnote_marks {
+#rlfiddhiuj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#dnbuoumcwi .gt_asterisk {
+#rlfiddhiuj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dnbuoumcwi .gt_indent_1 {
+#rlfiddhiuj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dnbuoumcwi .gt_indent_2 {
+#rlfiddhiuj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dnbuoumcwi .gt_indent_3 {
+#rlfiddhiuj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dnbuoumcwi .gt_indent_4 {
+#rlfiddhiuj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dnbuoumcwi .gt_indent_5 {
+#rlfiddhiuj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#dnbuoumcwi .katex-display {
+#rlfiddhiuj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#dnbuoumcwi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rlfiddhiuj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -900,37 +877,36 @@ Click to view code
 Click to view code
 </summary>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the time series plot with a transparent red shaded area for 2022 and a drought annotation</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>timeseries <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(waterprice, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> price)) <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fill the area under the line with orange color with alpha for transparency</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">fill =</span> <span class="st">"orange"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span>  </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span>  <span class="co"># Add the line plot on top</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Nasdaq Veles California Water Index (NQH2O)"</span>,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"$USD/Acre-ft"</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Nasdaq"</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Highlight the area for 2022 with transparent red</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fu">as.Date</span>(<span class="st">"2022-01-01"</span>), <span class="at">xmax =</span> <span class="fu">as.Date</span>(<span class="st">"2022-12-31"</span>), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">1500</span>), <span class="at">alpha =</span> <span class="fl">0.002</span>, <span class="at">fill =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span>  <span class="co"># Transparent red for the year 2022</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the "Drought Event" label to the shaded rectangle</span></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">as.Date</span>(<span class="st">"2022-06-01"</span>), <span class="at">y =</span> <span class="fu">max</span>(waterprice<span class="sc">$</span>price) <span class="sc">*</span> <span class="fl">0.9</span>, <span class="at">label =</span> <span class="st">"Drought Event"</span>, </span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">7.8</span>, <span class="at">hjust =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),  <span class="co"># Center and bold the title</span></span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the time series plot with a transparent red shaded area for 2022 and a drought annotation</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>timeseries <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(waterprice, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fill the area under the line with orange color with alpha for transparency</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">fill =</span> <span class="st">"orange"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span>  <span class="co"># Add the line plot on top</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Nasdaq Veles California Water Index (NQH2O)"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"$USD/Acre-ft"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Nasdaq"</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Highlight the area for 2022 with transparent red</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fu">as.Date</span>(<span class="st">"2022-01-01"</span>), <span class="at">xmax =</span> <span class="fu">as.Date</span>(<span class="st">"2022-12-31"</span>), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">1500</span>), <span class="at">alpha =</span> <span class="fl">0.002</span>, <span class="at">fill =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span>  <span class="co"># Transparent red for the year 2022</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the "Drought Event" label to the shaded rectangle</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">as.Date</span>(<span class="st">"2022-06-01"</span>), <span class="at">y =</span> <span class="fu">max</span>(waterprice<span class="sc">$</span>price) <span class="sc">*</span> <span class="fl">0.9</span>, <span class="at">label =</span> <span class="st">"Drought Event"</span>, </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">7.8</span>, <span class="at">hjust =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),  <span class="co"># Center and bold the title</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>timeseries</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
