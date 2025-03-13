@@ -15,6 +15,7 @@ editor_options:
 ---
 
 ```{r}
+#| echo: false
 # Upload picture
 knitr::include_graphics("data/107139646-1666627728782-gettyimages-1243860618-Coalinga.webp")
 ```
