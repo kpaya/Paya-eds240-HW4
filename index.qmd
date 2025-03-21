@@ -28,21 +28,11 @@ Source: The Washington Post
 
 The city of Coalinga, located in the heart of California's San Joaquin Valley, faced a severe water crisis in 2022 as drought conditions worsened. To ensure that residents had access to water, the city was forced to make unprecedented purchases at escalating costs, highlighting the financial strain on its water supply system.
 
-In this blog, I will explore the question: *How does drought impact the economy of a small community?* The data analyzed focuses on the effects of the 2022 drought, specifically the volume and cost of water purchased. These datasets were sourced from the California Department of Water Resources and the Nasdaq Veles California Water Index, respectively. By examining Coalinga’s water purchases, price fluctuations, and regional drought reports, I aim to better understand the pressures faced by local water systems. Through visualizations, I will highlight how smaller communities are disproportionately impacted by environmental challenges and emphasize the broader economic consequences of water scarcity.
+Here, I will explore the question: *How does drought impact the economy of a small community?* The data analyzed focuses on the effects of the 2022 drought, specifically the volume and cost of water purchased. These datasets were sourced from the California Department of Water Resources and the Nasdaq Veles California Water Index. By examining Coalinga’s water purchases, price fluctuations, and regional drought reports, I aim to better understand the pressures faced by local water systems. Through visualizations, I will highlight how smaller communities are disproportionately impacted by environmental challenges and emphasize the broader economic consequences of water scarcity.
 
 ### Data Details
 
-**1. Water Shortage Levels**
-
-Source: California Department of Water Resources
-
-Description: This table reports the monthly state standard shortage level by urban retail water suppliers, which are generally defined as agencies serving over 3,000 service connections or deliveries 3,000 acre-feet of water annually for municipal purposes. These data are collected by the State Water Resources Control Board through its monthly Conservation Reporting and the data included in this dataset represent a small component of the larger dataset.
-
-**2. California Water Index (NQH2O)**
-
-Source: Nasdaq Veles California Water Index (NQH2O)
-
-Description: The NQH2O tracks water rights lease and sale prices in California’s key water markets. It reflects the average price per acre-foot of water in five major regions, adjusting for factors like transaction types and market conditions, and is measured in U.S. dollars per acre-foot (325,851 gallons).
+I accessed monthly state water shortage levels by urban water suppliers using data from the California Department of Water Resources. To determine the price per acre-foot of water, I accessed historical data from the Nasdaq Veles California Water Index (NQH2O).
 
 ### References
 
@@ -64,7 +54,7 @@ knitr::include_graphics("data/infographics2.jpg")
 
 ## Decision-Making Process for Visualization
 
-When creating data visualizations, every design choice plays a key role in how effectively the message is communicated. In this project, I considered various elements such as graphic form, color choices, text annotations, and accessibility. To ensure inclusivity in this blog, I used the "fig.alt" attribute to provide alternative text for my visualizations, making them accessible to all users, including those with visual impairments.
+When creating data visualizations, every design choice plays a key role in how effectively the message is communicated. In this project, I considered various elements such as graphic form, color choices, text annotations, and accessibility. I included alt text for each of my visualizations to ensure accessibility.
 
 In applying a DEI (Diversity, Equity, and Inclusion) lens to my design, I was mindful of the communities and regions represented in the data. Water scarcity issues affect a range of populations across California, and the data selection decision I made aimed to highlight these disparities in small communities. Given that the central theme of this project revolves around drought, I selected a color palette from the yellow-red spectrum, evoking a sense of dryness/desert-like conditions.
 
@@ -113,6 +103,8 @@ library(tidycensus)
 library(tidyverse)
 library(lubridate)
 library(gt)
+library(scales)
+
 ```
 
 </details>
@@ -186,23 +178,29 @@ city_data <- city_data %>%
   mutate(supplier_name = factor(supplier_name, levels = rev(city_data$supplier_name[order(city_data$order_col)])))
 
 # Create the bar plot, using order_col to control the order of supplier_name
-bar_graph <- ggplot(city_data, aes(x = state_standard_shortage_level, y = supplier_name, fill = state_standard_shortage_level)) +
+bar_graph <- ggplot(city_data, aes(x = state_standard_shortage_level, y = supplier_name, fill = factor(state_standard_shortage_level))) +
   geom_bar(stat = "identity") +  # Create bars
   geom_text(aes(label = state_standard_shortage_level),  # Add text labels
             hjust = -0.1,  # Position the labels to the right of the bars
             size = 3.5,
             fontface = "bold") +  
-  scale_fill_gradient(low = "yellow1", high = "firebrick", 
-                      breaks = c(1, 5), 
-                      labels = c("Low Risk", "High Risk")) +  # Custom legend labels
+
+  # Manually specify colors for each of the 5 levels
+  scale_fill_manual(
+    values = c("1" = "lightgoldenrod", "2" = "gold", "3" = "orange", "4" = "orange3", "5" = "firebrick"),
+    labels = c("Low Risk", "Medium-Low Risk", "Medium Risk", "Medium-High Risk", "High Risk")
+  ) +  
+  
   theme_minimal() +
   labs(x = "Shortage Level", y="Water District", fill = "Shortage Risk Level") +  # Add title for the legend
+  
   theme(
     axis.text.x = element_blank(),  # Remove x-axis labels
     axis.ticks.x = element_blank(),  # Remove x-axis ticks
-    legend.position = "right",  # Place the legend on the right
-    panel.grid.major = element_line(color = "gray", size = 0.5),  # Add major gridlines
-    panel.grid = element_blank()  # Keep the gridlines visible for both axes
+    legend.position = "bottom",  # Place the legend at the bottom
+    plot.background = element_rect(fill = "#FFF1E0", color = "#FFF1E0"),  # Change background color
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank()   # Remove minor grid lines
   )
 ```
 
@@ -306,27 +304,40 @@ timeseries <- ggplot(waterprice, aes(x = Date, y = price)) +
   # Fill the area under the line with orange color with alpha for transparency
   geom_area(fill = "orange", alpha = 0.6) +  
   
-  geom_line(color = "firebrick") +  # Add the line plot on top
+  geom_line(color = "orange3") +  # Add the line plot on top
 
   labs(
     title = "Nasdaq Veles California Water Index (NQH2O)",
-    x = "Date",
+    x = NULL,
     y = "$USD/Acre-ft",
     caption = "Source: Nasdaq"
   ) +
   
   theme_minimal() +
-  
-  # Highlight the area for 2022 with transparent red
-  geom_rect(aes(xmin = as.Date("2022-01-01"), xmax = as.Date("2022-12-31"), ymin = 0, ymax = 1500), alpha = 0.002, fill = "firebrick") +  # Transparent red for the year 2022
-  
-  # Add the "Drought Event" label to the shaded rectangle
+  scale_y_continuous(labels = comma) +
+  # Add the "Drought Event" label as a bracket instead of a filled rectangle
   annotate("text", x = as.Date("2022-06-01"), y = max(waterprice$price) * 0.9, label = "Drought Event", 
-           vjust = -7.8, hjust = 0.4, color = "red", size = 4) +
+           vjust = -10, hjust = 3, color = "orange", size = 4) +
   
+  # Create the bracket using geom_segment
+  geom_segment(aes(x = as.Date("2022-01-01"), y = max(waterprice$price) * 1.05, 
+                   xend = as.Date("2022-12-31"), yend = max(waterprice$price) * 1.05),
+               color = "black", size = 1.2, lineend = "round") +  # The bracket line
+  
+  # Add vertical lines to create the look of a bracket
+  geom_segment(aes(x = as.Date("2022-01-01"), y = max(waterprice$price) * 1.05, 
+                   xend = as.Date("2022-01-01"), yend = max(waterprice$price) * 1),
+               color = "black", size = 1.2, lineend = "round") + 
+  
+  geom_segment(aes(x = as.Date("2022-12-31"), y = max(waterprice$price) * 1.05, 
+                   xend = as.Date("2022-12-31"), yend = max(waterprice$price) * 1),
+               color = "black", size = 1.2, lineend = "round") + 
+
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),  # Center and bold the title
-    plot.background = element_rect(fill = "white", color = "black", size = 1)
+    plot.background = element_rect(fill = "#FFF1E0", color = "#FFF1E0"),  # Change background color to match the other graph
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank()   # Remove minor grid lines
   )
 ```
 
